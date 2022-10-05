@@ -21,7 +21,7 @@ var flashjs = (function () {
   }
   
   return {
-    init: init,
+    init: init
   }
   
 })();

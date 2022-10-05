@@ -1,0 +1,24 @@
+{
+  "name": "flashjs",
+  "version": "0.0.1",
+  "description": "flashjs",
+  "main": "flash.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JiningLiu/flashjs.git"
+  },
+  "keywords": [
+    "JavaScript",
+    "Games",
+    "Package"
+  ],
+  "author": "Jining Liu",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/JiningLiu/flashjs/issues"
+  },
+  "homepage": "https://github.com/JiningLiu/flashjs#readme"
+}

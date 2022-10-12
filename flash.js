@@ -3,6 +3,8 @@
 
 var flashjs = (function () {
 
+  var started = false;
+
   var config = {
     ar: null,
     tar: null,
@@ -89,14 +91,22 @@ var flashjs = (function () {
         setTimeout(function () {
           document.querySelector('loading').remove();
           document.querySelector('flashjs').style.transition = 'unset';
+
+          const gravityObjects = document.querySelectorAll('[gravity="true"]');
+          gravityObjects.forEach(function (el) {
+            const mul = parseFloat(el.getAttribute('gravity-multiplier'));
+            gravity(el, mul);
+          });
+
+          started = true;
         }, 500);
       }, 500);
     }, 1000);
   }
 
   window.addEventListener('resize', function () {
-    w = parseInt(window.getComputedStyle(document.querySelector('body')).width.replace('px', '')) * 0.9;
-    h = parseInt(window.getComputedStyle(document.querySelector('body')).height.replace('px', '')) * 0.9;
+    w = parseFloat(window.getComputedStyle(document.querySelector('body')).width.replace('px', '')) * 0.9;
+    h = parseFloat(window.getComputedStyle(document.querySelector('body')).height.replace('px', '')) * 0.9;
 
     config.d = w < h ? w : h;
 
@@ -111,10 +121,29 @@ var flashjs = (function () {
     document.querySelector('flashjs').style.borderRadius = config.br || 0 + 'px';
   });
 
+  function applyGravity(el, mul) {
+    el.setAttribute('gravity', 'true');
+    el.setAttribute('gravity-multiplier', mul);
+    if (started) {
+      gravity(el, mul)
+    }
+  }
+
+  async function gravity(el, mul) {
+    console.log('applying gravity to:');
+    console.log(el);
+    var velocity = 1
+    setInterval(async function () {
+      el.style.marginTop = parseFloat(window.getComputedStyle(el).marginTop.replace('px', '')) + velocity;
+      velocity += 1;
+    }, 15 * (mul || 1));
+  }
+
   return {
     svd: config.d / 90,
     init: init,
-    start: start
+    start: start,
+    applyGravity: applyGravity
   }
 
 })();
@@ -125,7 +154,14 @@ Object.defineProperty(HTMLElement.prototype, "centered", {
     const marginVertical = (parseFloat(window.getComputedStyle(container).height) - (this.attributes.height.value || this.style.height)) / 2;
     const marginHorizontal = (parseFloat(window.getComputedStyle(container).width) - (this.attributes.width.value || this.style.width)) / 2;
     this.style.margin = marginVertical + 'px ' + marginHorizontal + 'px';
-    document.ele
+  },
+  writable: true,
+  configurable: true
+});
+
+Object.defineProperty(HTMLElement.prototype, "applyGravity", {
+  value: function applyGravity(mul) {
+    flashjs.applyGravity(this, mul)
   },
   writable: true,
   configurable: true
